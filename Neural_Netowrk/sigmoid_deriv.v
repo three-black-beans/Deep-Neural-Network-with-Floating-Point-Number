@@ -14,13 +14,11 @@
  *      * January 10, 2023  Jin Hyeong Park
  *        version 1.0 released.
  *
- *      * January 20, 2023 by Jin Hyeong Park
+ *      * January 22, 2023 by Jin Hyeong Park
  *        version 2.0 released.
  *
- *      * January 25, 2023 by Jin Hyeong Park
+ *      * January 26, 2023 by Jin Hyeong Park
  *        version 2.0 code modified and comments added.
- *
- *  NOTE: Overflow and Underflow are not considered yet.
  *
  *---------------------------------------------------------------------------*/
 
