@@ -38,7 +38,7 @@ wire [31:0] final_value;
 
 assign abs_value = {1'b0, deriv_object[30:0]};
 
-Fadder add1 (.A(32'b00111111100000000000000000000000), .B(abs_value), .clk(clk), .reset_n(reset_n), .result(add_value)); //A+B
+Fadder_Fsubtractor add1 (.A(32'b00111111100000000000000000000000), .B(abs_value), .clk(clk), .reset_n(reset_n), .result(add_value)); //A+B
 
 Fmultiplier m10 (.A(add_value), .B(add_value), .clk(clk), .reset_n(reset_n), .result(square_value));
 Fmultiplier m20 (.A(square_value), .B(32'b01000000000000000000000000000000), .clk(clk), .reset_n(reset_n), .result(final_value));

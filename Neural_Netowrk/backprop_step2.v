@@ -49,7 +49,7 @@ wire [31:0] step3_mult;
 wire [31:0] step4_mult;
 
 // partial derivation start
-Fadder sub1 (.A(sigmoid_out), .B({1'b0, target[30:0]}), .clk(clk), .reset_n(reset_n), .result(loss)); // A - B
+Fadder_Fsubtractor sub1 (.A(sigmoid_out), .B({1'b0, target[30:0]}), .clk(clk), .reset_n(reset_n), .result(loss)); // A - B
 sigmoid_deriv deriv1 (.deriv_object(out_value), .clk(clk), .reset_n(reset_n), .out(derv1_out));
 sigmoid_deriv deriv2 (.deriv_object(hidden_layer_value), .clk(clk), .reset_n(reset_n), .out(hidden_out));
 
@@ -61,7 +61,7 @@ Fmultiplier m4 (.A(step3_mult), .B(initial_input), .clk(clk), .reset_n(reset_n),
 
 Fmultiplier m5 (.A(32'b00111110010011001100110011001101), .B(step4_mult), .clk(clk), .reset_n(reset_n), .result(learning_mult));
 
-Fadder sub2 (.A(initial_weight), .B({1'b0, learning_mult[30:0]}), .clk(clk), .reset_n(reset_n), .result(w_new)); // A - B
+Fadder_Fsubtractor sub2 (.A(initial_weight), .B({1'b0, learning_mult[30:0]}), .clk(clk), .reset_n(reset_n), .result(w_new)); // A - B
 // partial derivation end
 
 
