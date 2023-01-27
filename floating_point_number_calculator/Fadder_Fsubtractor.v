@@ -66,7 +66,7 @@ always @ (posedge clk) begin
     B_fraction = B[22:0];
     
     input_diff = ({A_exponent, A_fraction} >= {B_exponent, B_fraction}) ? 1'b1 : 1'b0;
-    exponent_diff = A_exponent - B_exponent;
+
     big_sign = (input_diff) ? A_sign : B_sign;
     big_exponent = (input_diff) ? A_exponent : B_exponent;
     big_fraction = (input_diff) ? A_fraction : B_fraction;
@@ -74,7 +74,9 @@ always @ (posedge clk) begin
     small_sign = (input_diff) ? B_sign : A_sign;
     small_exponent = (input_diff) ? B_exponent : A_exponent;
     small_fraction = (input_diff) ? B_fraction : A_fraction;
-    
+
+    exponent_diff = big_exponent - small_exponent;
+
     tb_fraction = {1'b1, big_fraction};
     ts_fraction = {1'b1, small_fraction};
     ts_fraction = ts_fraction >> exponent_diff;
