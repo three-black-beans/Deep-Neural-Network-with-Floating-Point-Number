@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2023/01/23 15:39:54
+// Create Date: 2023/01/26 16:51:35
 // Design Name: 
-// Module Name: Fmultiplier_tb
+// Module Name: sigmoid_tb
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,25 +20,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Fmultiplier_tb #(parameter CLOCK_PERIOD = 20);
-
-reg clk = 1'b0;
-reg [31:0] A;
-reg [31:0] B;
-reg reset_n;
-wire [31:0] result;
-
+module sigmoid_tb #(parameter CLOCK_PERIOD = 20);
+    reg clk = 1'b0;
+    reg reset_n;
+    reg [31:0] a12;
+    wire [31:0] a34;
+    
 always begin : CLOCK_PULSE
     #(CLOCK_PERIOD / 2) clk = ~clk;
 end
 
 initial begin
-    A = 32'b00111111000000000000000000000000; // 0.5
-    B = 32'b11000000000010110100101101001011; // -2.17647051811218
-    reset_n = 1;
+   a12=32'b00111111001100110011001100110011; // a12 = 0.7
+   reset_n = 1;
 end
 
-
-Fmultiplier multiplier_instance (.A(A), .B(B), .clk(clk), .reset_n(reset_n), .exception(exception), .result(result));
+sigmoid sig_moid (.clk(clk), .reset_n(reset_n), .x(a12), .out(a34));
 
 endmodule

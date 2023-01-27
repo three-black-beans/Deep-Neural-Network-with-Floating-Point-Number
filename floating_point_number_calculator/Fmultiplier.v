@@ -99,7 +99,7 @@ always @ (posedge clk) begin
             //If exponent is less than 127
             underflow = (!carry_exp & !result_exp[7]);
             
-//            result = overflow ? {result_sign,8'hFF,23'd0} : underflow ? {result_sign,31'b0} : {result_sign, result_exp, result_frac};
+            // result = overflow ? {result_sign,8'hFF,23'd0} : underflow ? {result_sign,31'b0} : {result_sign, result_exp, result_frac};
             result = {result_sign, result_exp, result_frac};
 	        exception = 1'b0;
 	    end 
