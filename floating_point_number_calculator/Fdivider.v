@@ -30,10 +30,10 @@ module Fdivider(
     input [31:0] B,
     input clk,
     input reset_n,
-    output reg [31:0] result
+    output [31:0] result
     );
-wire [31:0] temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11;
-wire [31:0] x0, x1, x2, x3, x4, x5, x6;
+wire [31:0] temp1, temp2, temp3, temp4, temp5, temp6, temp7;
+wire [31:0] x0, x1, x2, x3;
 wire [31:0] reciprocal;
 wire [7:0] exponent;
 
@@ -61,6 +61,6 @@ assign exponent = x3[30:23] + 8'd126 - B[30:23];
 assign reciprocal = {B[31], exponent, x3[22:0]};
 
 // Multiplication : A * (1/B)
-Fmultiplier multi_result (.A(A), .B(reciprocal), .reset_n(reset_n), .clk(clk), .result(x4));
+Fmultiplier multi_result (.A(A), .B(reciprocal), .reset_n(reset_n), .clk(clk), .result(result));
 
 endmodule
