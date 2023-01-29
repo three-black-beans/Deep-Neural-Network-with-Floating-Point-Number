@@ -42,21 +42,13 @@ wire [31:0] final_result;
 
 assign y = {1'b0, x[30:0]}; // y = |x|
 
-Fadder_Fsubtractor add1 (.A(ONE), .B(y), .clk(clk), .reset_n(reset_n), .result(add_result)); // add_result=|x|+1
+Fadder_Fsubtractor add1 (.A(ONE), .B(y), .IsSub(1'b0), .clk(clk), .reset_n(reset_n), .result(add_result)); // add_result=|x|+1
 Fdivider dv1 (.A(x), .B(add_result), .clk(clk), .reset_n(reset_n), .result(dv_result)); // dv_result=1/(|x|+1)
-Fadder_Fsubtractor add2 (.A(ONE), .B(dv_result), .clk(clk), .reset_n(reset_n), .result(divadd_result)); // divadd_result=1/(|x|+1)+1
+Fadder_Fsubtractor add2 (.A(ONE), .B(dv_result), .IsSub(1'b0), .clk(clk), .reset_n(reset_n), .result(divadd_result)); // divadd_result=1/(|x|+1)+1
 Fdivider dv2 (.A(divadd_result), .B(TWO), .clk(clk), .reset_n(reset_n), .result(final_result)); // final_result=(1/(|x|+1)+1)/2
 
 
 assign out = final_result;
-
-always @ (posedge clk) begin
-    $display("%b add_result", add_result);
-    $display("%b dv_result", dv_result);
-    $display("%b divadd_result", divadd_result);
-    $display("%b final_result", final_result);
-
-end
     
 endmodule
 
