@@ -75,22 +75,18 @@ always @ (posedge clk) begin
             result = 32'b1;
             exception = 1'b1;
         end else begin // Normal case
-            $display("hello");
             // If exponent is 0, hidden bit will be 0 or 1
             ta_fraction = (|A_exponent) ? {1'b1, A_fraction} : {1'b0, A_fraction};
             tb_fraction = (|B_exponent) ? {1'b1, B_fraction} : {1'b0, B_fraction};
             
             // fraction production
             frac_prod = ta_fraction * tb_fraction;
-            $display("%b frac_prod", frac_prod);
 
             // fraction normarlize
             normed_carry = frac_prod[47] ? 1'b1 : 1'b0;
             normed_prod = normed_carry ? frac_prod : frac_prod << 1;
-            $display("%b normed_prod", normed_prod);
             product_round = |normed_prod[22:0]; // Ending 23 bits are OR'ed for rounding operation.
 	        result_frac = normed_prod[46:24]  + (normed_prod[23] & product_round);
-	        $display("%b result_frac", result_frac);
             // exponent sum
             {carry_exp, result_exp} = A_exponent + B_exponent - BIAS + normed_carry;
             

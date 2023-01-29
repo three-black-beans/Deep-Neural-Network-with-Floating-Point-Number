@@ -107,10 +107,10 @@ always @ (posedge clk or negedge reset_n) begin
         B_fraction = B[22:0];
         
         /* - (-B) to + (+B) */
-        operator = (IsSub & B_sign) ? 1'b0 : IsSub; 
+        operator = (IsSub & B_sign) ? 1'b0 : IsSub; // addition -> 0, subtraction -> 1
         B_sign = (IsSub & B_sign) ? 1'b0 : B_sign; 
         /* - (+B) to + (-B) */
-        B_sign = (operator) ? 1'b0 : B_sign;
+        B_sign = (!operator) ? B_sign : 1'b1;
         
         // If input_diff is high then |A| >= |B| else |A| < |B|.
         input_diff = ({A_exponent, A_fraction} >= {B_exponent, B_fraction}) ? 1'b1 : 1'b0;
