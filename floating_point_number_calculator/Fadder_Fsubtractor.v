@@ -48,14 +48,13 @@
  *    (+A) + (+B) and (-A) + (-B) => +(X + Y) and -(X + Y)
  *    (+A) + (-B) and (-A) + (+B) => +(X - Y) and -(X - Y))
  *   #5. Set big and small number by comparing A[30:0] and B[30:0].
- *   #4. Concatenation of result_sign, result_exponent and result_fraction 
+ *   #6. Concatenation of result_sign, result_exponent and result_fraction 
  *       is pushed out and this is the output result.
- *   #5. With rising edge clock, Repeat #1 ~ #4. 
+ *   #7. With rising edge clock, Repeat #1 ~ #4. 
  *
  * Reset/Initialization:
  *   This 'Fadder_Fsubractor' cannot be initialized by synchronous load
  *   This 'Fadder_Fsubractor can be initialized by asynchronous reset.
-
  *
  *---------------------------------------------------------------------------*/
 module Fadder_Fsubtractor(

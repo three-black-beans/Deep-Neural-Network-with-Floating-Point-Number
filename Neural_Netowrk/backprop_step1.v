@@ -21,16 +21,17 @@
  *        version 2.0 code modified and comments added.
  *
  *---------------------------------------------------------------------------*/
-
-
+ 
 module backprop_step1 #(parameter ONE = 32'b00111111100000000000000000000000,
                         parameter TWO = 32'b01000000000000000000000000000000,
                         parameter LEARNING_CONSTANT = 32'b00111111000000000000000000000000)(
-    input [31:0] target, // Target Value
-    input [31:0] output_sigmoid, // Output's Sigmoid Value
-    input [31:0] hidden_layer_value_sigmoid, // hidden_layer's Simoid Value
-    input [31:0] w_initial, // Old Weight
-    output [31:0] w_update // New Weight
+    input clk,
+    input reset_n,
+    input [31:0] target, // t1 (target value)
+    input [31:0] output_sigmoid, // h4 (Output's Sigmoid Value)
+    input [31:0] hidden_layer_value_sigmoid, // h1, h2, h3 (hidden_layer's Simoid Value)
+    input [31:0] w_initial, // w10, w11, w12 (Old Weight) 
+    output [31:0] w_update // w10+, w11+. w12+ (New Weight) 
 );
 
 wire [31:0] output_sigmoid_cal; // 1-output_sigmoid
@@ -41,15 +42,14 @@ wire [31:0] step3_mult;
 wire [31:0] step4_mult;
 wire [31:0] step5_mult;
 
+Fadder_Fsubtractor add1(.clk(clk), .reset_n(reset_n), .A(ONE), .B(output_sigmoid), .IsSub(1'b1), .result(output_sigmoid_cal)); // A - B
+Fadder_Fsubtractor add2(.clk(clk), .reset_n(reset_n), .A(output_sigmoid), .B(target), .IsSub(1'b1), .result(step1_add)); // A - B
+Fmultiplier mult1(.clk(clk), .reset_n(reset_n), .exception(exception), .A(step1_add), .B(TWO), .result(step2_mult));
+Fmultiplier mult2(.clk(clk), .reset_n(reset_n), .exception(exception), .A(step2_mult), .B(output_sigmoid), .result(step3_mult));
+Fmultiplier mult3(.clk(clk), .reset_n(reset_n), .exception(exception), .A(step3_mult), .B(output_sigmoid_cal), .result(step4_mult));
+Fmultiplier mult4(.clk(clk), .reset_n(reset_n), .exception(exception), .A(step4_mult), .B(hidden_layer_value_sigmoid), .result(step5_mult));
+Fmultiplier mult5(.clk(clk), .reset_n(reset_n), .exception(exception), .A(LEARNING_CONSTANT), .B(step5_mult), .result(learning_mult));
 
-Fadder_Fsubtractor add1(.A(ONE), .B({1'b1,output_sigmoid[30:0]}), .result(output_sigmoid_cal)); // A - B
-Fadder_Fsubtractor add2(.A(output_sigmoid), .B(target), .result(step1_add));
-Fmultiplier mult1(.A(step1_add), .B(two), .result(step2_mult));
-Fmultiplier mult2(.A(step2_mult), .B(output_sigmoid), .result(step3_mult));
-Fmultiplier mult3(.A(step3_mult), .B(output_sigmoid_cal), .result(step4_mult));
-Fmultiplier mult4(.A(step4_mult), .B(hidden_layer_value_sigmoid), .result(step5_mult));
-Fmultiplier mult5(.A(LEARNING_CONSTANT), .B(step5_mult), .result(learning_mult));
-
-Fadder_Fsubtractor add3(.A(w_initial),.B({1'b1,learning_mult[30:0]}),.result(w_update)); // A - B
+Fadder_Fsubtractor add3(.clk(clk), .reset_n(reset_n), .A(w_initial),.B(learning_mult), .IsSub(1'b1), .result(w_update)); // A - B
 
 endmodule
