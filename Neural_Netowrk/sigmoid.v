@@ -50,7 +50,13 @@ Fdivider dv2 (.A(divadd_result), .B(TWO), .clk(clk), .reset_n(reset_n), .result(
 
 assign out = final_result;
 
+always @ (posedge clk) begin
+    $display("%b add_result", add_result);
+    $display("%b dv_result", dv_result);
+    $display("%b divadd_result", divadd_result);
+    $display("%b final_result", final_result);
 
+end
     
 endmodule
 

@@ -25,6 +25,7 @@ module Fadder_Fsubtractor_tb #(parameter CLOCK_PERIOD = 20);
 reg clk = 1'b0;
 reg [31:0] A;
 reg [31:0] B;
+reg IsSub;
 reg reset_n;
 wire [31:0] result;
     
@@ -33,12 +34,13 @@ always begin : CLOCK_PULSE
 end
 
 initial begin
-    A = 32'b11000010110010000000000000000000; // -100
-    B = 32'b01000001101000000000000000000000; // 20
+    A = 32'b11000000010011001100110011001101; // -3.2
+    B = 32'b00111111001100110011001100110011; // 0.7
+    IsSub = 0;
     reset_n = 1;
 end
 
 
-Fadder_Fsubtractor adder_instance (.A(A), .B(B), .clk(clk), .reset_n(reset_n), .result(result));
+Fadder_Fsubtractor adder_instance (.A(A), .B(B), .IsSub(IsSub), .clk(clk), .reset_n(reset_n), .result(result));
 
 endmodule

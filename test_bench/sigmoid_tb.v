@@ -31,7 +31,7 @@ always begin : CLOCK_PULSE
 end
 
 initial begin
-   a12=32'b00111111001100110011001100110011; // a12 = 0.7
+   a12=32'b00111111000110011001100110011010; // a12 = 0.6
    reset_n = 1;
 end
 
