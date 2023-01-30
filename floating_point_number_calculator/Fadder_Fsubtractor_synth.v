@@ -255,6 +255,7 @@ always @ (posedge clk) begin
     result_fraction = fraction[22:0];
     result_exponent = temp_exponent;
     result = {result_sign, result_exponent, result_fraction};
+    result = (A == B) ? 32'b0 : result;
 end
 
 endmodule

@@ -240,8 +240,8 @@ always @ (posedge clk) begin
 	        temp_exponent = temp_exponent - left_shift;
         end
     end
-
     result = {result_sign, temp_exponent, temp_fraction[22:0]};
+    result = (A == B) ? 32'b0 : result;
 end
 
 endmodule

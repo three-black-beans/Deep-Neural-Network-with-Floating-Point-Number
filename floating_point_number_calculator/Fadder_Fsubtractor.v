@@ -98,62 +98,64 @@ always @ (posedge clk or negedge reset_n) begin
         temp_exponent = 0;
         left_shift = 0;
     end else begin
-        A_sign = A[31];
-        B_sign = B[31];
-        A_exponent = A[30:23];
-        B_exponent = B[30:23];
-        A_fraction = A[22:0];
-        B_fraction = B[22:0];
-        
-        /* - (-B) to + (+B) */
-        operator = (IsSub & B_sign) ? 1'b0 : IsSub; // addition -> 0, subtraction -> 1
-        B_sign = (IsSub & B_sign) ? 1'b0 : B_sign; 
-        /* - (+B) to + (-B) */
-        B_sign = (!operator) ? B_sign : 1'b1;
-        
-        // If input_diff is high then |A| >= |B| else |A| < |B|.
-        input_diff = ({A_exponent, A_fraction} >= {B_exponent, B_fraction}) ? 1'b1 : 1'b0;
-        big_sign = (input_diff) ? A_sign : B_sign;
-        big_exponent = (input_diff) ? A_exponent : B_exponent;
-        big_fraction = (input_diff) ? A_fraction : B_fraction;
-        small_sign = (input_diff) ? B_sign : A_sign;
-        small_exponent = (input_diff) ? B_exponent : A_exponent;
-        small_fraction = (input_diff) ? B_fraction : A_fraction;
-       
-        // sign setting
-        result_sign = big_sign;
-        add_sub = (big_sign == small_sign);
-        if (add_sub) begin
-            big_sign = 1'b0;
-            small_sign = 1'b0;
-        end
-        
-        exponent_diff = big_exponent - small_exponent;
-
-        tb_fraction = {1'b1, big_fraction};
-        ts_fraction = {1'b1, small_fraction};
-        ts_fraction = ts_fraction >> exponent_diff;
-        
-        {right_shift, temp_fraction} = (add_sub) ? tb_fraction + ts_fraction : tb_fraction - ts_fraction;
-        temp_exponent = big_exponent;
-        
-        if (right_shift) begin
-            temp_fraction = temp_fraction >> 1'b1;
-            temp_exponent = temp_exponent + 1'b1;
+        if (A == B) begin
+            result = 32'b0;
         end else begin
-            left_shift = 0;
-            while (temp_fraction[23] == 1'b0) begin
-                left_shift = left_shift + 1'b1;
-                temp_fraction = temp_fraction << 1'b1;
+            A_sign = A[31];
+            B_sign = B[31];
+            A_exponent = A[30:23];
+            B_exponent = B[30:23];
+            A_fraction = A[22:0];
+            B_fraction = B[22:0];
+        
+            /* - (-B) to + (+B) */
+            operator = (IsSub & B_sign) ? 1'b0 : IsSub; // addition -> 0, subtraction -> 1
+            B_sign = (IsSub & B_sign) ? 1'b0 : B_sign; 
+            /* - (+B) to + (-B) */
+            B_sign = (!operator) ? B_sign : 1'b1;
+        
+            // If input_diff is high then |A| >= |B| else |A| < |B|.
+            input_diff = ({A_exponent, A_fraction} >= {B_exponent, B_fraction}) ? 1'b1 : 1'b0;
+            big_sign = (input_diff) ? A_sign : B_sign;
+            big_exponent = (input_diff) ? A_exponent : B_exponent;
+            big_fraction = (input_diff) ? A_fraction : B_fraction;
+            small_sign = (input_diff) ? B_sign : A_sign;
+            small_exponent = (input_diff) ? B_exponent : A_exponent;
+            small_fraction = (input_diff) ? B_fraction : A_fraction;
+       
+            // sign setting
+            result_sign = big_sign;
+            add_sub = (big_sign == small_sign);
+            if (add_sub) begin
+                big_sign = 1'b0;
+                small_sign = 1'b0;
             end
-            temp_exponent = temp_exponent - left_shift;
+        
+            exponent_diff = big_exponent - small_exponent;
+
+            tb_fraction = {1'b1, big_fraction};
+            ts_fraction = {1'b1, small_fraction};
+            ts_fraction = ts_fraction >> exponent_diff;
+        
+            {right_shift, temp_fraction} = (add_sub) ? tb_fraction + ts_fraction : tb_fraction - ts_fraction;
+            temp_exponent = big_exponent;
+        
+            if (right_shift) begin
+                temp_fraction = temp_fraction >> 1'b1;
+                temp_exponent = temp_exponent + 1'b1;
+            end else begin
+                left_shift = 0;
+                while (temp_fraction[23] == 1'b0) begin
+                    left_shift = left_shift + 1'b1;
+                    temp_fraction = temp_fraction << 1'b1;
+                end
+                temp_exponent = temp_exponent - left_shift;
+            end
+            result_fraction = temp_fraction[22:0];
+            result_exponent = temp_exponent;
+            result = {result_sign, result_exponent, result_fraction};        
         end
     end
-
-
-    result_fraction = temp_fraction[22:0];
-    result_exponent = temp_exponent;
-    result = {result_sign, result_exponent, result_fraction};
 end
 
 endmodule
