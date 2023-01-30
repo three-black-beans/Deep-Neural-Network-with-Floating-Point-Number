@@ -11,7 +11,7 @@
  *  Design     : Sigmoid
  *  Target Devices: Zybo Z7-20
  *  Modification History:
- *      * January 10, 2023  Jin Hyeong Park
+ *      * January 15, 2023  Jin Hyeong Park
  *        version 1.0 released.
  *
  *      * January 22, 2023 by Jin Hyeong Park
