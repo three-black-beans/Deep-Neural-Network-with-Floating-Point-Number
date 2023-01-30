@@ -1,1 +1,1 @@
-# Neural-Network-with-Floating-Point-Number
+# Deep-Neural-Network-with-Floating-Point-Number
