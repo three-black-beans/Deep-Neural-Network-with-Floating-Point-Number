@@ -6,27 +6,27 @@
  저희가 설계한 시스템은 총 3개의 데이터 항목(가격, 거리, 남은 주차공간)을 각 항목의 기준에 맞게 치환하여 3개의 input으로 생각하고, 이러한 input들에 서로 다른 가중치를 주어 연산하여, 가장 높은 결과값(Output)이 나오는 데이터, 즉 주차장을 추천하는 방식을 따르고 있습니다. 
  저희는 각 항목들에 가중치를 주기 위해 input 값에 가중치를 곱하고, 이를 Sigmoid 함수에 넣어 값을 산출하는 뉴런의 기본 구조 방식을 따랐습니다. Sigmoid 함수는 일반적인 Step 함수와 다르게 미분이 가능하고, 여러 데이터들을 폭 넓게 볼 수 있기에 활성화 함수로 채택하기로 결정하였습니다. 또한, 저희는 모든 신호들이 32비트의 부동소수점에 의거하여 처리될 수 있도록 설계하였습니다. 이를 통해 정규화된 형태로 숫자들을 표현하고 산술 연산을 더욱 간단하게 만들었습니다.
 
-![noname01](https://user-images.githubusercontent.com/88180151/215572145-60c56281-e650-4543-b86f-bf2c86bff460.png)
+   ![noname01](https://user-images.githubusercontent.com/88180151/215572145-60c56281-e650-4543-b86f-bf2c86bff460.png)
 
-그림  Forward Propagation 구조도
+   그림  Forward Propagation 구조도
 
 
- ## 이 블록도에서 W1 ~ W12 까지는 가중치를 의미하고, Z1~Z4은 자신에게 연결된 선들의 합입니다. 예를 들어 Z1의 경우에는 (Input1 * W1 + Input2 * W4 + Input3 * W7)이 되고, Z4의 경우에는 (H1 * W10 + H2 * W11 + H3 * W12)가 됩니다. H1, H2, H3, O1은 Z1~Z4까지의 값들을 시그모이드 함수에 넣은 값들을 의미합니다.
+ 이 블록도에서 W1 ~ W12 까지는 가중치를 의미하고, Z1~Z4은 자신에게 연결된 선들의 합입니다. 예를 들어 Z1의 경우에는 (Input1 * W1 + Input2 * W4 + Input3 * W7)이 되고, Z4의 경우에는 (H1 * W10 + H2 * W11 + H3 * W12)가 됩니다. H1, H2, H3, O1은 Z1~Z4까지의 값들을 시그모이드 함수에 넣은 값들을 의미합니다.
 
 2) 주차장 선택 시스템 학습 과정
  주차장을 선택할 때, 가격, 남은 주차 공간, 거리 등 여러 가지 선택 요소들이 있습니다. 하지만, 개인별로 선호하는 요소들의 차이가 있고, 그러한 선호도의 차이를 적용시키기 위한 시스템입니다.
  저희가 설계한 시스템은 Backpropagation의 방식을 사용하고 있습니다. 주차장 선택 시스템에 있는 회로도에 그려진 순서대로 임의의 가중치에 대해 우선적으로 Forward Propagation을 진행합니다. 이후 저희가 설정해놓은 예측값과 Forward Propagation을 통해 얻은 실제값을 비교하여 얻은 오차를 통해 Back propagation을 거쳐 가중치를 업데이트하는 방식을 추구하고 있습니다.
 
-![noname02](https://user-images.githubusercontent.com/88180151/215572254-5f28ab59-af8d-401c-bca1-be60ab54810e.png)
+   ![noname02](https://user-images.githubusercontent.com/88180151/215572254-5f28ab59-af8d-401c-bca1-be60ab54810e.png)
 
-그림  Back Propagation step1
+   그림  Back Propagation step1
  
 
  위 그림으로 Back Propagation 1단계를 간단히 설명하자면, 저희가 예측한 값은 o1, 임의의 가중치를 통해 얻은 값은 z4가 되고, 여기서 E(에러)값은 MSE(평균제곱오차)에 의거하여 (o1 - z4)^2 의 형태가 됩니다. 이렇게 구한 E값을 각 임의의 가중치(w10 ~ w12)가 끼치는 영향의 정도를 편미분 근사식을 이용하여 나타낸 후, 그 정도만큼을 해당 가중치에 더해주거나 빼주는 방식을 이용했습니다.  
 
-![noname03](https://user-images.githubusercontent.com/88180151/215572314-20e7a0b6-c6cf-4e99-a873-190df93472d9.png)
+   ![noname03](https://user-images.githubusercontent.com/88180151/215572314-20e7a0b6-c6cf-4e99-a873-190df93472d9.png)
 
-그림  Back Propagation step2
+   그림  Back Propagation step2
 
 
  Back propagation 2단계를 설명하자면, 1단계와 마찬가지로 가중치(W1 ~ W9)까지가 E값에 미치는 영향의 정도를 편미분의 근사식을 이용하여 나타낸 후, 그 정도만큼을 해당 가중치에 가감해주는 방식을 이용하고 있습니다. 그림 3을 기준으로 설명을 드리면, 데이터 셋에 있는 Input값 X1, X2, X3에 대해서 임의의 가중치를 곱하여, Z1의 값을 얻고, 이를 Sigmoid 함수에 대입시켜서 H1의 값을 얻습니다. 이후 이렇게 구한 값들을 미리 만들어 놓은 편미분의 근사식에 대입하여, 가중치에 가감시켜야 하는 값을 구했습니다.
