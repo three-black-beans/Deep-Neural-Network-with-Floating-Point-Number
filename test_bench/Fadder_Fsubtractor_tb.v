@@ -28,14 +28,33 @@ reg [31:0] B;
 reg IsSub;
 reg reset_n;
 wire [31:0] result;
-    
+reg [2:0] rand1, rand2, rand7, rand8;
+reg rand3, rand4;
+reg [4:0] temp;
+reg [19:0] temp2;
+
 always begin : CLOCK_PULSE
     #(CLOCK_PERIOD / 2) clk = ~clk;
 end
 
+always @(posedge clk) begin
+    rand1 = $urandom%7;
+    rand2 = $urandom%7;
+    rand3 = $urandom%1;
+    rand4 = $urandom%1;
+    temp = 5'b10000;
+    temp2 = 20'b10000000000000000000;
+    rand7 = $urandom%7;
+    rand8 = $urandom%7;
+    A = {rand3, temp, rand1, temp2, rand7};
+    B = {rand4, temp, rand2, temp2, rand8};
+    IsSub = 0;
+    reset_n = 1;
+end
+
 initial begin
-    A = 32'b11000000010011001100110011001101; // -3.2
-    B = 32'b00111111001100110011001100110011; // 0.7
+    A = 32'b00000000000000000000000000000000; // 0
+    B = 32'b00000000000000000000000000000000; // 0
     IsSub = 0;
     reset_n = 1;
 end
